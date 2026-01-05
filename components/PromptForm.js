@@ -1,23 +1,59 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 export default function PromptForm({ onSubmit }) {
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const { data: categories, isLoading, error } = useSWR("/api/categories");
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage("");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage("");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Failed to load data.</p>;
+  if (!categories) return null;
+
   async function handleSubmit(event) {
     event.preventDefault();
 
     const formData = new FormData(event.target);
+    const categoriesArray = formData.getAll("categories");
+
+    if (categoriesArray.length === 0) {
+      setErrorMessage("Please select at least one category.");
+      return;
+    }
 
     const promptData = {
       question: formData.get("question"),
       answer: formData.get("answer"),
-      category: formData.get("category"),
+      categories: categoriesArray,
     };
 
     const success = await onSubmit(promptData);
 
     if (success) {
       event.target.reset();
+      setSuccessMessage("Successfully created");
+      setErrorMessage("");
     } else {
-      return <p>Failed to create prompt. Please try again.</p>;
+      setErrorMessage("Something went wrong. Please try again.");
+      setSuccessMessage("");
     }
   }
 
@@ -30,9 +66,16 @@ export default function PromptForm({ onSubmit }) {
       <input id="quiz-answer" type="text" name="answer" required />
 
       <label htmlFor="quiz-category">Category:</label>
-      <input id="quiz-category" type="text" name="category" />
+      <select id="quiz-category" type="text" name="categories" multiple>
+        {categories.map((category) => (
+          <option key={category._id} value={category.name}>
+            {category.name}
+          </option>
+        ))}
+      </select>
 
       <button type="submit">CREATE</button>
+      {successMessage && <p>{successMessage}</p>}
     </form>
   );
 }

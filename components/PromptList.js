@@ -9,6 +9,8 @@ export default function PromptList() {
   if (error) return <p>Failed to load data.</p>;
   if (!prompts) return null;
 
+  console.log(prompts)
+
   return (
     <>
       {prompts.map((prompt) => (

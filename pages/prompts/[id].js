@@ -1,10 +1,21 @@
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 export default function PromptDetailPage() {
   const router = useRouter();
   const { id } = router.query;
   const { data: prompt, isLoading, error } = useSWR(`/api/prompts/${id}`);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage("");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return error.message;
@@ -18,7 +29,7 @@ export default function PromptDetailPage() {
     if (response.ok) {
       router.push("/?deleted=true");
     } else {
-      return alert("Failed to delete prompt. Please try again.");
+      setErrorMessage("Failed to delete. Please try again.");
     }
   }
 
@@ -26,6 +37,7 @@ export default function PromptDetailPage() {
 
   return (
     <>
+      {errorMessage && <p>{errorMessage}</p>}
       <p>{prompt.question}</p>
       <p>{prompt.answer}</p>
       {prompt.categories.map((category) => (
