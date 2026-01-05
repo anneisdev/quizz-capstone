@@ -4,11 +4,7 @@ import useSWR from "swr";
 export default function PromptDetailPage() {
   const router = useRouter();
   const { id } = router.query;
-  const {
-    data: prompt,
-    isLoading,
-    error,
-  } = useSWR(id ? `/api/prompts/${id}` : null);
+  const { data: prompt, isLoading, error } = useSWR(`/api/prompts/${id}`);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return error.message;
@@ -26,9 +22,7 @@ export default function PromptDetailPage() {
     }
   }
 
-  async function handleEditPrompt(id) {
-   
-  }
+  async function handleEditPrompt(id) {}
 
   return (
     <>
