@@ -45,5 +45,32 @@ export default async function handler(request, response) {
     }
   }
 
+  if (request.method === "PUT") {
+    const { answer, question, categories } = request.body;
+
+    try {
+      const prompt = await Prompt.findById(id);
+      if (!prompt) {
+        return response
+          .status(404)
+          .json({ status: "error", message: "Prompt not found." });
+      }
+
+      prompt.answer = answer;
+      prompt.question = question;
+      prompt.categories = categories;
+
+      await prompt.save();
+      const populated = await prompt.populate("categories");
+      return response.status(200).json(populated);
+    } catch (error) {
+      console.error("PUT /api/prompts/[id] error:", error);
+      return response.status(500).json({
+        status: "error",
+        message: "Database update failed.",
+      });
+    }
+  }
+
   return response.status(405).json({ status: "Method not allowed" });
 }

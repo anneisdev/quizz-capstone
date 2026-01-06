@@ -1,5 +1,6 @@
 import dbConnect from "@/db/connect";
 import Category from "@/db/models/Category";
+import Prompt from "@/db/models/Prompt";
 
 export default async function handler(request, response) {
   await dbConnect();

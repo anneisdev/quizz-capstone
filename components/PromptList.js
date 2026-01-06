@@ -9,12 +9,12 @@ export default function PromptList() {
   if (error) return <p>Failed to load data.</p>;
   if (!prompts) return null;
 
-  console.log(prompts)
+  console.log(prompts);
 
   return (
     <>
       {prompts.map((prompt) => (
-        <PromotLi key={prompt._id}>
+        <PromptLi key={prompt._id}>
           <p>{prompt.question}</p>
           <p>{prompt.answer}</p>
 
@@ -22,12 +22,12 @@ export default function PromptList() {
             <p key={category._id}>{category.name}</p>
           ))}
           <Link href={`/prompts/${prompt._id}`}>To Detail</Link>
-        </PromotLi>
+        </PromptLi>
       ))}
     </>
   );
 }
 
-const PromotLi = styled.li`
+const PromptLi = styled.li`
   border: 5px solid black;
 `;

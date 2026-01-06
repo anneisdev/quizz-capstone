@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
-export default function PromptForm({ onSubmit }) {
+export default function PromptForm({ onSubmit, initialData, onCancel }) {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const { data: categories, isLoading, error } = useSWR("/api/categories");
@@ -60,21 +60,48 @@ export default function PromptForm({ onSubmit }) {
   return (
     <form onSubmit={handleSubmit}>
       <label htmlFor="quiz-question">Question:</label>
-      <input id="quiz-question" type="text" name="question" required />
+      <input
+        id="quiz-question"
+        type="text"
+        name="question"
+        defaultValue={initialData?.question}
+        required
+      />
 
       <label htmlFor="quiz-answer">Answer:</label>
-      <input id="quiz-answer" type="text" name="answer" required />
+      <input
+        id="quiz-answer"
+        type="text"
+        name="answer"
+        defaultValue={initialData?.answer}
+        required
+      />
 
-      <label htmlFor="quiz-category">Category:</label>
-      <select id="quiz-category" type="text" name="categories" multiple>
+      <p>Category:</p>
+      <ul>
         {categories.map((category) => (
-          <option key={category._id} value={category.name}>
-            {category.name}
-          </option>
+          <li key={category._id}>
+            <label>
+              <input
+                type="checkbox"
+                name="categories"
+                value={category._id}
+                defaultChecked={initialData?.categories.some(
+                  (c) => c._id === category._id
+                )}
+              />
+              {category.name}
+            </label>
+          </li>
         ))}
-      </select>
+      </ul>
 
-      <button type="submit">CREATE</button>
+      <button type="submit"> {initialData ? "UPDATE" : "CREATE"}</button>
+      {onCancel && (
+        <button type="button" onClick={onCancel}>
+          CANCEL
+        </button>
+      )}
       {successMessage && <p>{successMessage}</p>}
     </form>
   );
