@@ -1,10 +1,17 @@
 import dbConnect from "@/db/connect";
 import Prompt from "@/db/models/Prompt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
 
 export default async function handler(request, response) {
   await dbConnect();
+  const session = await getServerSession(request, response, authOptions);
 
   if (request.method === "GET") {
+    if (!session) {
+      response.status(401).json({ status: "Not authorized" });
+      return;
+    }
     try {
       const prompts = await Prompt.find()
         .populate("categories")

@@ -1,5 +1,7 @@
 import { SWRConfig } from "swr";
 import GlobalStyle from "../styles";
+import { SessionProvider } from "next-auth/react";
+import Login from "@/components/Login";
 
 export async function fetcher(url) {
   const response = await fetch(url);
@@ -13,13 +15,19 @@ export async function fetcher(url) {
   return response.json();
 }
 
-export default function App({ Component, pageProps }) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
   return (
     <>
-      <SWRConfig value={{ fetcher }}>
-        <GlobalStyle />
-        <Component {...pageProps} />
-      </SWRConfig>
+      <SessionProvider session={session}>
+        <SWRConfig value={{ fetcher }}>
+          <Login />
+          <GlobalStyle />
+          <Component {...pageProps} />
+        </SWRConfig>
+      </SessionProvider>
     </>
   );
 }

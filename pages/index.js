@@ -1,5 +1,6 @@
 import PromptForm from "@/components/PromptForm";
 import PromptList from "@/components/PromptList";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
@@ -8,6 +9,7 @@ export default function HomePage() {
   const { mutate } = useSWR("/api/prompts");
   const router = useRouter();
   const { deleted } = router.query;
+  const { data: session, status } = useSession();
   const [deleteSuccessMessage, setDeleteSuccessMessage] = useState("");
 
   useEffect(() => {
@@ -36,6 +38,10 @@ export default function HomePage() {
       return true;
     }
     return false;
+  }
+
+  if (status !== "authenticated") {
+    return <h2>Access denied!</h2>;
   }
   return (
     <div>
