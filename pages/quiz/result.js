@@ -24,8 +24,8 @@ export default function QuizResultPage() {
 
     return {
       question: prompt.question,
-      userAnswer,
       correctAnswer: prompt.answer,
+      userAnswer,
       isCorrect,
     };
   });
@@ -41,3 +41,7 @@ export default function QuizResultPage() {
     </>
   );
 }
+
+
+
+//wenn correctcount größer als user highscore ist, dann correctcount = userhighscore

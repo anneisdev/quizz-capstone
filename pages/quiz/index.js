@@ -8,5 +8,14 @@ export default function QuizPage() {
   if (error) return <p>Failed to load data.</p>;
   if (!prompts) return null;
 
-  return <Link href={`/quiz/${prompts[0]._id}`}>Play</Link>;
+  function handleResetQuiz() {
+    localStorage.removeItem("quizAnswers");
+  }
+
+  console.log(localStorage);
+  return (
+    <Link href={`/quiz/${prompts[0]._id}`} onClick={handleResetQuiz}>
+      Play
+    </Link>
+  );
 }

@@ -53,6 +53,7 @@ export default function QuizCardPage() {
     setCurrentAnswer(event.target.value);
   }
 
+  console.log(localStorage);
   console.log("submittetAnswers:", submittedAnswers);
   console.log("currentAnswer:", currentAnswer);
 
