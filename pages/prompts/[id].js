@@ -1,7 +1,7 @@
+import PromptDetail from "@/components/PromptDetail";
 import PromptForm from "@/components/PromptForm";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
 import useSWR from "swr";
 
 export default function PromptDetailPage() {
@@ -59,20 +59,21 @@ export default function PromptDetailPage() {
     return false;
   }
 
+  function handleBookmark() {
+    console.log("bookmarked detail");
+  }
+
   return (
     <>
       {errorMessage && <p>{errorMessage}</p>}
       {editSucces && <p>{editSucces}</p>}
       {!isEiditing && (
-        <>
-          <p>{prompt.question}</p>
-          <p>{prompt.answer}</p>
-          {prompt.categories.map((category) => (
-            <p key={category._id}>{category.name}</p>
-          ))}
-          <button onClick={() => handleDeletePrompt(prompt._id)}>DELETE</button>
-          <button onClick={() => setIsEditing(true)}>EDIT</button>
-        </>
+        <PromptDetail
+          data={prompt}
+          onDelete={() => handleDeletePrompt(prompt._id)}
+          onEdit={() => setIsEditing(true)}
+          onBookmark={handleBookmark}
+        />
       )}
 
       {isEiditing && (
@@ -85,4 +86,3 @@ export default function PromptDetailPage() {
     </>
   );
 }
-

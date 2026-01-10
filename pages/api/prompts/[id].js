@@ -64,7 +64,7 @@ export default async function handler(request, response) {
       const populated = await prompt.populate("categories");
       return response.status(200).json(populated);
     } catch (error) {
-      console.error("PUT /api/prompts/[id] error:", error);
+      console.error("PUT /api/prompt/[id] error:", error);
       return response.status(500).json({
         status: "error",
         message: "Database update failed.",

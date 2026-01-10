@@ -14,6 +14,9 @@ export default function Navigation() {
           <Link href={"/collection"}>Collection</Link>
         </li>
         <li>
+          <Link href={"/quiz"}>Quiz</Link>
+        </li>
+        <li>
           <Link href={"/"}>Home</Link>
         </li>
       </ul>
