@@ -3,14 +3,13 @@ import PromptList from "@/components/PromptList";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import useSWR from "swr";
 
 export default function HomePage() {
-  const { mutate } = useSWR("/api/prompts");
   const router = useRouter();
   const { deleted } = router.query;
   const { data: session, status } = useSession();
   const [deleteSuccessMessage, setDeleteSuccessMessage] = useState("");
+  const [bookmarked, setBookmarked] = useState(false);
 
   useEffect(() => {
     if (deleted === "true") {
@@ -26,28 +25,23 @@ export default function HomePage() {
     }
   }, [deleteSuccessMessage]);
 
-  async function handleCreatePrompt(promptData) {
-    const response = await fetch("/api/prompts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(promptData),
-    });
-
-    if (response.ok) {
-      mutate();
-      return true;
-    }
-    return false;
-  }
-
   if (status !== "authenticated") {
     return <h2>Access denied!</h2>;
   }
+
+  function handleBookmark() {
+    setBookmarked(true);
+
+    if (bookmarked) {
+      setBookmarked(false);
+    }
+    console.log(bookmarked);
+  }
+
   return (
     <div>
-      <PromptForm onSubmit={handleCreatePrompt} />
       {deleteSuccessMessage && <p>{deleteSuccessMessage}</p>}
-      <PromptList />
+      <PromptList handleBookmark={handleBookmark} />
     </div>
   );
 }

@@ -11,6 +11,7 @@ const promptSchema = new Schema({
     ref: "Category",
     required: true,
   },
+  owner: { type: String, required: true },
 });
 
 const Prompt = mongoose.models.Prompt || mongoose.model("Prompt", promptSchema);

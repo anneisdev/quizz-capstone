@@ -2,10 +2,15 @@ import dbConnect from "@/db/connect";
 import Prompt from "@/db/models/Prompt";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
+import { getToken } from "next-auth/jwt";
 
 export default async function handler(request, response) {
   await dbConnect();
+
   const session = await getServerSession(request, response, authOptions);
+
+  const token = await getToken({ req: request });
+  const userId = token?.sub;
 
   if (request.method === "GET") {
     if (!session) {
@@ -13,6 +18,7 @@ export default async function handler(request, response) {
       return;
     }
     try {
+      // const prompts = await Prompt.find({owner: userId}) für nur current user owned prompts
       const prompts = await Prompt.find()
         .populate("categories")
         .sort({ _id: -1 });
@@ -27,7 +33,7 @@ export default async function handler(request, response) {
   if (request.method === "POST") {
     try {
       const promptData = request.body;
-      const newPrompt = await Prompt.create(promptData);
+      const newPrompt = await Prompt.create({ ...promptData, owner: userId });
 
       return response.status(201).json(newPrompt);
     } catch (error) {
