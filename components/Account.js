@@ -17,9 +17,13 @@ export default function Account() {
   if (!session) return <p>Please log in</p>;
   if (!user) return <p>Loading user…</p>;
 
+  console.log("session: ", session);
+  console.log("user: ", user);
+
   return (
     <>
       <p>ID: {user._id}</p>
+      <p>Username: {session.user.name}</p>
       <p>Highscore: {user.highscore}</p>
       <p>Bookmarks: {user.bookmarks.length}</p>
     </>

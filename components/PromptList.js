@@ -8,8 +8,7 @@ export default function PromptList({ handleBookmark }) {
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Failed to load data.</p>;
   if (!prompts) return null;
-
-  console.log(prompts);
+  
 
   return (
     <>

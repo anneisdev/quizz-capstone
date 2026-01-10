@@ -21,7 +21,7 @@ export default async function handler(request, response) {
     try {
       const user = await User.findOne({
         authProviderId: id,
-      }).populate("bookmarks");
+      })
 
       if (!user) {
         return response.status(404).json({ error: "User not found" });
