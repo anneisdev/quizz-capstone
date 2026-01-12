@@ -1,9 +1,11 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 export default function Account() {
   const { data: session, status } = useSession();
   const [user, setUser] = useState(null);
+  const { data: prompts } = useSWR("/api/prompts");
 
   useEffect(() => {
     if (!session) return;
@@ -17,8 +19,9 @@ export default function Account() {
   if (!session) return <p>Please log in</p>;
   if (!user) return <p>Loading user…</p>;
 
-  console.log("session: ", session);
-  console.log("user: ", user);
+  const userPrompts = prompts?.filter((prompt) => prompt.owner === user.authProviderId);
+
+  console.log(user);
 
   return (
     <>
@@ -26,6 +29,7 @@ export default function Account() {
       <p>Username: {session.user.name}</p>
       <p>Highscore: {user.highscore}</p>
       <p>Bookmarks: {user.bookmarks.length}</p>
+      <p>My Prompts: {userPrompts.length}</p>
     </>
   );
 }

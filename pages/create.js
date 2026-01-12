@@ -1,3 +1,4 @@
+import FooterNavigation from "@/components/FooterNavigation";
 import PromptForm from "@/components/PromptForm";
 import useSWR from "swr";
 
@@ -19,8 +20,9 @@ export default function CreatePage() {
   }
 
   return (
-    <div>
+    <>
       <PromptForm onSubmit={handleCreatePrompt} />
-    </div>
+      <FooterNavigation />
+    </>
   );
 }

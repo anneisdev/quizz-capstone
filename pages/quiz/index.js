@@ -1,3 +1,5 @@
+import FooterNavigation from "@/components/FooterNavigation";
+import HomeNavigation from "@/components/HomeNavigation";
 import Link from "next/link";
 import useSWR from "swr";
 
@@ -14,8 +16,11 @@ export default function QuizPage() {
 
   console.log(localStorage);
   return (
-    <Link href={`/quiz/${prompts[0]._id}`} onClick={handleResetQuiz}>
-      Play
-    </Link>
+    <>
+      <Link href={`/quiz/${prompts[0]._id}`} onClick={handleResetQuiz}>
+        Play
+      </Link>
+      <FooterNavigation />
+    </>
   );
 }

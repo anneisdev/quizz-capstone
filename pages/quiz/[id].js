@@ -2,7 +2,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import useLocalStorage from "use-local-storage";
 import useLocalStorageState from "use-local-storage-state";
 
 export default function QuizCardPage() {
@@ -53,10 +52,6 @@ export default function QuizCardPage() {
     setCurrentAnswer(event.target.value);
   }
 
-  console.log(localStorage);
-  console.log("submittetAnswers:", submittedAnswers);
-  console.log("currentAnswer:", currentAnswer);
-
   return (
     <>
       <form onSubmit={handleSubmitAnswer}>
@@ -73,4 +68,8 @@ export default function QuizCardPage() {
       {prevI && <Link href={`/quiz/${prevI}`}>Previous</Link>}
     </>
   );
+}
+
+export async function getServerSideProps() {
+  return { props: {} };
 }

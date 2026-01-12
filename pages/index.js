@@ -1,9 +1,9 @@
-import Navigation from "@/components/Navigation";
+import HomeNavigation from "@/components/HomeNavigation";
 
 export default function HomePage() {
   return (
     <div>
-      <Navigation />
+      <HomeNavigation />
     </div>
   );
 }

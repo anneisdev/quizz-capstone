@@ -1,3 +1,5 @@
+import FooterNavigation from "@/components/FooterNavigation";
+import HomeNavigation from "@/components/HomeNavigation";
 import PromptList from "@/components/PromptList";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -37,6 +39,7 @@ export default function CollectionPage() {
     <div>
       {deleteSuccessMessage && <p>{deleteSuccessMessage}</p>}
       <PromptList handleBookmark={handleBookmark} />
+      <FooterNavigation />
     </div>
   );
 }

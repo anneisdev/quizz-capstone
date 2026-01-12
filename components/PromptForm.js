@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import styled from "styled-components";
 import useSWR from "swr";
 
 export default function PromptForm({ onSubmit, initialData, onCancel }) {
@@ -59,42 +60,44 @@ export default function PromptForm({ onSubmit, initialData, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label htmlFor="quiz-question">Question:</label>
-      <input
-        id="quiz-question"
-        type="text"
-        name="question"
-        defaultValue={initialData?.question}
-        required
-      />
+      <StyledDiv>
+        <label htmlFor="quiz-question">Question:</label>
+        <input
+          id="quiz-question"
+          type="text"
+          name="question"
+          defaultValue={initialData?.question}
+          required
+        />
 
-      <label htmlFor="quiz-answer">Answer:</label>
-      <input
-        id="quiz-answer"
-        type="text"
-        name="answer"
-        defaultValue={initialData?.answer}
-        required
-      />
+        <label htmlFor="quiz-answer">Answer:</label>
+        <input
+          id="quiz-answer"
+          type="text"
+          name="answer"
+          defaultValue={initialData?.answer}
+          required
+        />
 
-      <p>Category:</p>
-      <ul>
-        {categories.map((category) => (
-          <li key={category._id}>
-            <label>
-              <input
-                type="checkbox"
-                name="categories"
-                value={category._id}
-                defaultChecked={initialData?.categories.some(
-                  (c) => c._id === category._id
-                )}
-              />
-              {category.name}
-            </label>
-          </li>
-        ))}
-      </ul>
+        <p>Category:</p>
+        <ul>
+          {categories.map((category) => (
+            <li key={category._id}>
+              <label>
+                <input
+                  type="checkbox"
+                  name="categories"
+                  value={category._id}
+                  defaultChecked={initialData?.categories.some(
+                    (c) => c._id === category._id
+                  )}
+                />
+                {category.name}
+              </label>
+            </li>
+          ))}
+        </ul>
+      </StyledDiv>
 
       <button type="submit"> {initialData ? "UPDATE" : "CREATE"}</button>
       {onCancel && (
@@ -106,3 +109,9 @@ export default function PromptForm({ onSubmit, initialData, onCancel }) {
     </form>
   );
 }
+
+const StyledDiv = styled.div`
+  border: 5px solid black;
+  display: flex;
+  flex-direction: column;
+`;

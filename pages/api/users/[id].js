@@ -21,7 +21,7 @@ export default async function handler(request, response) {
     try {
       const user = await User.findOne({
         authProviderId: id,
-      })
+      });
 
       if (!user) {
         return response.status(404).json({ error: "User not found" });
@@ -35,11 +35,9 @@ export default async function handler(request, response) {
 
   if (request.method === "PATCH") {
     try {
-      const { promptId, action } = request.body;
-      if (!promptId || !action) {
-        return response
-          .status(400)
-          .json({ error: "Prompt or action not found" });
+      const { newScore } = request.body;
+      if (newScore === undefined || newScore === null) {
+        return response.status(400).json({ error: "Score not provided" });
       }
 
       const user = await User.findOne({
@@ -48,7 +46,23 @@ export default async function handler(request, response) {
       if (!user) {
         return response.status(400).json({ error: "User not found" });
       }
-    } catch {}
+
+      if (newScore > user.highscore) {
+        user.highscore = newScore;
+        await user.save();
+        return response.status(200).json({
+          message: "Highscore updated",
+          highscore: user.highscore,
+        });
+      }
+
+      return response.status(200).json({
+        message: "Score not higher than current highscore",
+        highscore: user.highscore,
+      });
+    } catch (error) {
+      return response.status(500).json({ error: error.message });
+    }
   }
 
   return response.status(405).json({ status: "Method not allowed" });

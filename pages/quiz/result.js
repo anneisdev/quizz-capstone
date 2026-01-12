@@ -1,7 +1,11 @@
+import FooterNavigation from "@/components/FooterNavigation";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 import useSWR from "swr";
 import useLocalStorageState from "use-local-storage-state";
 
 export default function QuizResultPage() {
+  const { data: session, status } = useSession();
   const { data: prompts, isLoading, error } = useSWR("/api/prompts");
   const [submittedAnswers, setSubmittedAnswers] = useLocalStorageState(
     "quizAnswers",
@@ -30,18 +34,32 @@ export default function QuizResultPage() {
     };
   });
 
-  console.log(localStorage);
-  console.log(results);
+  useEffect(() => {
+    async function saveNewHighScore() {
+      try {
+        await fetch(`/api/users/${session.user.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            newScore: correctCount,
+          }),
+        });
+      } catch (error) {
+        console.error("Failed to save highscore:", error);
+      }
+    }
+
+    saveNewHighScore();
+  }, [session, correctCount]);
 
   return (
     <>
       <p>
         Result:{correctCount} / {results.length}
       </p>
+      <FooterNavigation />
     </>
   );
 }
-
-
-
-//wenn correctcount größer als user highscore ist, dann correctcount = userhighscore
