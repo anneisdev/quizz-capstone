@@ -52,8 +52,11 @@ export default function QuizCardPage() {
     setCurrentAnswer(event.target.value);
   }
 
+  console.log(currentAnswer);
+
   return (
     <>
+      <Link href={"/quiz"}>Home </Link>
       <form onSubmit={handleSubmitAnswer}>
         <p>{prompt.question}</p>
         <input

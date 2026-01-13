@@ -9,7 +9,7 @@ export default function FooterNavigation() {
         <Link href={"/quiz"}>Quiz</Link>
         <Link href={"/collection"}>Collection</Link>
         <Link href={"/create"}>Create</Link>
-        <Link href={"/"}>Bookmarks</Link>
+        <Link href={"/bookmarks"}>Bookmarks</Link>
         <Link href={"/profile"}>Profile</Link>
       </StyledDiv>
     </>

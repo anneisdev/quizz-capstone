@@ -1,15 +1,7 @@
 import Link from "next/link";
 import styled from "styled-components";
-import useSWR from "swr";
 
-export default function PromptList({ handleBookmark }) {
-  const { data: prompts, isLoading, error } = useSWR("/api/prompts");
-
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Failed to load data.</p>;
-  if (!prompts) return null;
-  
-
+export default function PromptList({ handleBookmark, prompts }) {
   return (
     <>
       {prompts.map((prompt) => (

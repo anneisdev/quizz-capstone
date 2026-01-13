@@ -7,6 +7,7 @@ export default function HomeNavigation() {
       <StyledDiv>
         <StyledLink href={"/quiz"}>Quiz</StyledLink>
         <StyledLink href={"/collection"}>Collection</StyledLink>
+        <StyledLink href={"/bookmarks"}>Bookmark </StyledLink>
         <StyledLink href={"/create"}>Create</StyledLink>
         <StyledLink href={"/profile"}>Profile</StyledLink>
       </StyledDiv>
