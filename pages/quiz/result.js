@@ -12,6 +12,26 @@ export default function QuizResultPage() {
     { defaultValue: {} }
   );
 
+  useEffect(() => {
+    async function saveNewHighScore() {
+      try {
+        await fetch(`/api/users/${session.user.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            newScore: correctCount,
+          }),
+        });
+      } catch (error) {
+        console.error("Failed to save highscore:", error);
+      }
+    }
+
+    saveNewHighScore();
+  }, [session, correctCount]);
+
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Failed to load data.</p>;
   if (!prompts) return null;
@@ -33,26 +53,6 @@ export default function QuizResultPage() {
       isCorrect,
     };
   });
-
-  useEffect(() => {
-    async function saveNewHighScore() {
-      try {
-        await fetch(`/api/users/${session.user.id}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            newScore: correctCount,
-          }),
-        });
-      } catch (error) {
-        console.error("Failed to save highscore:", error);
-      }
-    }
-
-    saveNewHighScore();
-  }, [session, correctCount]);
 
   return (
     <>
