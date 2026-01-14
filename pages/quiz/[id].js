@@ -72,7 +72,3 @@ export default function QuizCardPage() {
     </>
   );
 }
-
-export async function getServerSideProps() {
-  return { props: {} };
-}

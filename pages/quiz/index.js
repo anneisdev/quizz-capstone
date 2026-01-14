@@ -1,6 +1,7 @@
 import FooterNavigation from "@/components/FooterNavigation";
 import HomeNavigation from "@/components/HomeNavigation";
 import Link from "next/link";
+import styled from "styled-components";
 import useSWR from "swr";
 
 export default function QuizPage() {
@@ -17,10 +18,23 @@ export default function QuizPage() {
   console.log(localStorage);
   return (
     <>
-      <Link href={`/quiz/${prompts[0]._id}`} onClick={handleResetQuiz}>
-        Play
-      </Link>
+      <StyledWrapper>
+        <StyledLink href={`/quiz/${prompts[0]._id}`} onClick={handleResetQuiz}>
+          Play
+        </StyledLink>
+      </StyledWrapper>
       <FooterNavigation />
     </>
   );
 }
+
+const StyledLink = styled(Link)`
+  font-size: 28px;
+`;
+
+const StyledWrapper = styled.div`
+  display: grid;
+  place-items: center;
+  height: 200px;
+  border: 3px solid green;
+`;

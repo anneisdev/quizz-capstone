@@ -19,7 +19,7 @@ export default function BookmarkPage() {
 
   return (
     <>
-      <PromptList handleBookmark={handleBookmark} />;
+      <PromptList handleBookmark={handleBookmark} prompts={prompts} />;
       <FooterNavigation />
     </>
   );
