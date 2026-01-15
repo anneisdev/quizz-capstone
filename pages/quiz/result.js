@@ -1,6 +1,6 @@
 import FooterNavigation from "@/components/FooterNavigation";
 import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import useLocalStorageState from "use-local-storage-state";
 
@@ -11,39 +11,20 @@ export default function QuizResultPage() {
     "quizAnswers",
     { defaultValue: {} }
   );
-
-  useEffect(() => {
-    async function saveNewHighScore() {
-      try {
-        await fetch(`/api/users/${session.user.id}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            newScore: correctCount,
-          }),
-        });
-      } catch (error) {
-        console.error("Failed to save highscore:", error);
-      }
-    }
-
-    saveNewHighScore();
-  }, [session, correctCount]);
+  const [correctCount, setCorrectCount] = useState(0);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Failed to load data.</p>;
   if (!prompts) return null;
 
-  let correctCount = 0;
+  let count = 0
   const results = prompts.map((prompt) => {
     const userAnswer = submittedAnswers[prompt._id];
     const isCorrect =
       userAnswer.trim().toLowerCase() === prompt.answer.trim().toLowerCase();
 
     if (isCorrect) {
-      correctCount++;
+      count++;
     }
 
     return {
@@ -54,10 +35,33 @@ export default function QuizResultPage() {
     };
   });
 
+  useEffect(() => {
+
+    setCorrectCount(count)
+    async function saveNewHighScore() {
+      try {
+        await fetch(`/api/users/${session.user.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            newScore: count,
+          }),
+        });
+      } catch (error) {
+        console.error("Failed to save highscore:", error);
+      }
+    }
+
+    saveNewHighScore();
+  }, [session, count]);
+
+
   return (
     <>
       <p>
-        Result:{correctCount} / {results.length}
+        Result:{count} / {results.length}
       </p>
       <FooterNavigation />
     </>
