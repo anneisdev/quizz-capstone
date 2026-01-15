@@ -13,11 +13,9 @@ export default function QuizResultPage() {
   );
   const [correctCount, setCorrectCount] = useState(0);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Failed to load data.</p>;
-  if (!prompts) return null;
-
   useEffect(() => {
+    if (!prompts || !session?.user?.id) return;
+
     let count = 0;
     prompts.forEach((prompt) => {
       const userAnswer = submittedAnswers[prompt._id] || "";
