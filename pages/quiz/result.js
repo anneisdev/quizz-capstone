@@ -12,41 +12,10 @@ export default function QuizResultPage() {
     { defaultValue: {} }
   );
 
-  useEffect(() => {
-    if (!prompts || !session?.user?.id) return;
-
-    let count = 0;
-    prompts.forEach((prompt) => {
-      const userAnswer = submittedAnswers[prompt._id] || "";
-      const isCorrect =
-        userAnswer.trim().toLowerCase() === prompt.answer.trim().toLowerCase();
-      if (isCorrect) {
-        count++;
-      }
-    });
-
-    async function saveNewHighScore() {
-      try {
-        await fetch(`/api/users/${session.user.id}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            newScore: count,
-          }),
-        });
-      } catch (error) {
-        console.error("Failed to save highscore:", error);
-      }
-    }
-
-    saveNewHighScore();
-  }, [session, prompts, submittedAnswers]);
-
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Failed to load data.</p>;
   if (!prompts) return null;
+
 
   let count = 0;
   const results = prompts.map((prompt) => {
@@ -65,6 +34,29 @@ export default function QuizResultPage() {
       isCorrect,
     };
   });
+
+
+  useEffect(() => {
+    if (!session?.user?.id) return;
+
+    async function saveNewHighScore() {
+      try {
+        await fetch(`/api/users/${session.user.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            newScore: count,
+          }),
+        });
+      } catch (error) {
+        console.error("Failed to save highscore:", error);
+      }
+    }
+
+    saveNewHighScore();
+  }, [session, count]);
 
   return (
     <>
