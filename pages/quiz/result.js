@@ -17,26 +17,19 @@ export default function QuizResultPage() {
   if (error) return <p>Failed to load data.</p>;
   if (!prompts) return null;
 
-  let count = 0;
-  const results = prompts.map((prompt) => {
-    const userAnswer = submittedAnswers[prompt._id];
-    const isCorrect =
-      userAnswer.trim().toLowerCase() === prompt.answer.trim().toLowerCase();
-
-    if (isCorrect) {
-      count++;
-    }
-
-    return {
-      question: prompt.question,
-      correctAnswer: prompt.answer,
-      userAnswer,
-      isCorrect,
-    };
-  });
-
   useEffect(() => {
+    let count = 0;
+    prompts.forEach((prompt) => {
+      const userAnswer = submittedAnswers[prompt._id] || "";
+      const isCorrect =
+        userAnswer.trim().toLowerCase() === prompt.answer.trim().toLowerCase();
+      if (isCorrect) {
+        count++;
+      }
+    });
+
     setCorrectCount(count);
+
     async function saveNewHighScore() {
       try {
         await fetch(`/api/users/${session.user.id}`, {
@@ -54,12 +47,34 @@ export default function QuizResultPage() {
     }
 
     saveNewHighScore();
-  }, [session, count]);
+  }, [session, prompts, submittedAnswers]);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Failed to load data.</p>;
+  if (!prompts) return null;
+
+  let count = 0;
+  const results = prompts.map((prompt) => {
+    const userAnswer = submittedAnswers[prompt._id] || "";
+    const isCorrect =
+      userAnswer.trim().toLowerCase() === prompt.answer.trim().toLowerCase();
+
+    if (isCorrect) {
+      count++;
+    }
+
+    return {
+      question: prompt.question,
+      correctAnswer: prompt.answer,
+      userAnswer,
+      isCorrect,
+    };
+  });
 
   return (
     <>
       <p>
-        Result:{count} / {results.length}
+        Result: {count} / {results.length}
       </p>
       <FooterNavigation />
     </>
