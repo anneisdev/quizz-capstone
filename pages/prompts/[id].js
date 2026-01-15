@@ -1,5 +1,6 @@
 import PromptDetail from "@/components/PromptDetail";
 import PromptForm from "@/components/PromptForm";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
@@ -13,9 +14,20 @@ export default function PromptDetailPage() {
     error,
     mutate,
   } = useSWR(`/api/prompts/${id}`);
+  const { data: session } = useSession();
+  const { data: userData } = useSWR(
+    session?.user?.id ? `/api/users/${session.user.id}` : null
+  );
   const [errorMessage, setErrorMessage] = useState("");
   const [isEiditing, setIsEditing] = useState(false);
   const [editSucces, setEditSuccess] = useState("");
+  const [bookmarks, setBookmarks] = useState([]);
+
+  useEffect(() => {
+    if (userData?.bookmarks) {
+      setBookmarks(userData.bookmarks);
+    }
+  }, [userData]);
 
   useEffect(() => {
     if (errorMessage) {
@@ -59,9 +71,28 @@ export default function PromptDetailPage() {
     return false;
   }
 
-  function handleBookmark() {
-    console.log("bookmarked detail");
+  async function handleBookmark(promptId) {
+    try {
+      const response = await fetch(`/api/users/${session.user.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          promptId: promptId,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setBookmarks(data.bookmarks);
+      }
+    } catch (error) {
+      console.error("Failed to toggle bookmark", error);
+    }
   }
+
+  const isBookmarked = bookmarks.includes(prompt._id);
 
   return (
     <>
@@ -72,7 +103,8 @@ export default function PromptDetailPage() {
           data={prompt}
           onDelete={() => handleDeletePrompt(prompt._id)}
           onEdit={() => setIsEditing(true)}
-          onBookmark={handleBookmark}
+          onBookmark={() => handleBookmark(prompt._id)}
+          isBookmarked={isBookmarked}
         />
       )}
 

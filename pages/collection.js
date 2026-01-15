@@ -13,6 +13,17 @@ export default function CollectionPage() {
   const [deleteSuccessMessage, setDeleteSuccessMessage] = useState("");
   const [query, setQuery] = useState("");
   const { data: prompts, isLoading, error } = useSWR("/api/prompts");
+  const { data: userData } = useSWR(
+    session?.user?.id ? `/api/users/${session.user.id}` : null
+  );
+  const [bookmarks, setBookmarks] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  useEffect(() => {
+    if (userData?.bookmarks) {
+      setBookmarks(userData.bookmarks);
+    }
+  }, [userData]);
 
   useEffect(() => {
     if (deleted === "true") {
@@ -36,8 +47,25 @@ export default function CollectionPage() {
     return <h2>Access denied!</h2>;
   }
 
-  async function handleBookmark() {
-    console.log("bookmarked");
+  async function handleBookmark(promptId) {
+    try {
+      const response = await fetch(`/api/users/${session.user.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          promptId: promptId,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setBookmarks(data.bookmarks);
+      }
+    } catch (error) {
+      console.error("Failed to toggle bookmark", error);
+    }
   }
 
   function handleFilter(event) {
@@ -54,19 +82,26 @@ export default function CollectionPage() {
     event.reset;
   }
 
-  const filteredPrompts = prompts.filter((prompt) => {
-    const lowerCaseQuery = query.toLocaleLowerCase();
-    const filteredQ = prompt.question
-      .toLocaleLowerCase()
-      .includes(lowerCaseQuery);
-    const filteredA = prompt.answer
-      .toLocaleLowerCase()
-      .includes(lowerCaseQuery);
-    const filteredC = prompt.categories.some((category) =>
-      category.name.toLowerCase().includes(lowerCaseQuery)
-    );
+  function handleCategoryFilter(categoryName) {
+    setSelectedCategory(categoryName);
+  }
 
-    return filteredA || filteredQ || filteredC;
+  const filteredPrompts = prompts.filter((prompt) => {
+    const matchesCategory = selectedCategory
+      ? prompt.categories.some((category) => category.name === selectedCategory)
+      : true;
+
+    const lowerCaseQuery = query.toLocaleLowerCase();
+    const matchesQuery =
+      query === ""
+        ? true
+        : prompt.question.toLocaleLowerCase().includes(lowerCaseQuery) ||
+          prompt.answer.toLocaleLowerCase().includes(lowerCaseQuery) ||
+          prompt.categories.some((category) =>
+            category.name.toLowerCase().includes(lowerCaseQuery)
+          );
+
+    return matchesCategory && matchesQuery;
   });
 
   return (
@@ -77,13 +112,24 @@ export default function CollectionPage() {
         <input type="text" name="query"></input>
         <button type="submit">Submit</button>
       </form>
+      <button onClick={() => handleCategoryFilter(null)}>All Categories</button>
+      <button onClick={() => handleCategoryFilter("History")}>History</button>
+      <button onClick={() => handleCategoryFilter("Science")}>Science</button>
+      <button onClick={() => handleCategoryFilter("Geography")}>
+        Geography
+      </button>
+      <button onClick={() => handleCategoryFilter("Politics")}>Politics</button>
       {filteredPrompts.length === 0 && (
         <p>
           Sorry we couldn´t retrieve the latest prompts at the moment. Please
           try again later.
         </p>
       )}
-      <PromptList handleBookmark={handleBookmark} prompts={filteredPrompts} />
+      <PromptList
+        handleBookmark={handleBookmark}
+        prompts={filteredPrompts}
+        bookmarks={bookmarks}
+      />
       <FooterNavigation />
     </div>
   );
