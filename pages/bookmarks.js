@@ -50,7 +50,7 @@ export default function BookmarkPage() {
   return (
     <>
       {bookmarkedPrompts.length === 0 && (
-        <p>You haven't bookmarked any prompts yet.</p>
+        <p>You haven´t bookmarked any prompts yet.</p>
       )}
       {bookmarkedPrompts.length > 0 && (
         <PromptList
