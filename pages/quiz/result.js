@@ -13,6 +13,10 @@ export default function QuizResultPage() {
   );
   const [correctCount, setCorrectCount] = useState(0);
 
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Failed to load data.</p>;
+  if (!prompts) return null;
+
   let count = 0;
   const results = prompts.map((prompt) => {
     const userAnswer = submittedAnswers[prompt._id];
@@ -51,10 +55,6 @@ export default function QuizResultPage() {
 
     saveNewHighScore();
   }, [session, count]);
-
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Failed to load data.</p>;
-  if (!prompts) return null;
 
   return (
     <>
