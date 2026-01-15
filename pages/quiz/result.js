@@ -12,32 +12,18 @@ export default function QuizResultPage() {
     { defaultValue: {} }
   );
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Failed to load data.</p>;
-  if (!prompts) return null;
-
-
-  let count = 0;
-  const results = prompts.map((prompt) => {
-    const userAnswer = submittedAnswers[prompt._id] || "";
-    const isCorrect =
-      userAnswer.trim().toLowerCase() === prompt.answer.trim().toLowerCase();
-
-    if (isCorrect) {
-      count++;
-    }
-
-    return {
-      question: prompt.question,
-      correctAnswer: prompt.answer,
-      userAnswer,
-      isCorrect,
-    };
-  });
-
-
   useEffect(() => {
-    if (!session?.user?.id) return;
+    if (!prompts || !session?.user?.id) return;
+
+    let count = 0;
+    prompts.forEach((prompt) => {
+      const userAnswer = submittedAnswers[prompt._id] || "";
+      const isCorrect =
+        userAnswer.trim().toLowerCase() === prompt.answer.trim().toLowerCase();
+      if (isCorrect) {
+        count++;
+      }
+    });
 
     async function saveNewHighScore() {
       try {
@@ -56,7 +42,29 @@ export default function QuizResultPage() {
     }
 
     saveNewHighScore();
-  }, [session, count]);
+  }, [session, prompts, submittedAnswers]);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Failed to load data.</p>;
+  if (!prompts) return null;
+
+  let count = 0;
+  const results = prompts.map((prompt) => {
+    const userAnswer = submittedAnswers[prompt._id] || "";
+    const isCorrect =
+      userAnswer.trim().toLowerCase() === prompt.answer.trim().toLowerCase();
+
+    if (isCorrect) {
+      count++;
+    }
+
+    return {
+      question: prompt.question,
+      correctAnswer: prompt.answer,
+      userAnswer,
+      isCorrect,
+    };
+  });
 
   return (
     <>
