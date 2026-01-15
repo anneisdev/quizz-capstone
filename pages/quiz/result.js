@@ -11,7 +11,6 @@ export default function QuizResultPage() {
     "quizAnswers",
     { defaultValue: {} }
   );
-  const [correctCount, setCorrectCount] = useState(0);
 
   useEffect(() => {
     if (!prompts || !session?.user?.id) return;
@@ -25,8 +24,6 @@ export default function QuizResultPage() {
         count++;
       }
     });
-
-    setCorrectCount(count);
 
     async function saveNewHighScore() {
       try {
