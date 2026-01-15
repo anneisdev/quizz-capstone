@@ -1,4 +1,10 @@
-export default function PromptDetail({ data, onDelete, onEdit, onBookmark }) {
+export default function PromptDetail({
+  data,
+  onDelete,
+  onEdit,
+  onBookmark,
+  isBookmarked,
+}) {
   return (
     <>
       <p>{data.question}</p>
@@ -11,8 +17,8 @@ export default function PromptDetail({ data, onDelete, onEdit, onBookmark }) {
         width="24"
         height="24"
         viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
+        fill={isBookmarked ? "black" : "none"}
+        stroke="black"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"

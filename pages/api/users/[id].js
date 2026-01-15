@@ -35,10 +35,7 @@ export default async function handler(request, response) {
 
   if (request.method === "PATCH") {
     try {
-      const { newScore } = request.body;
-      if (newScore === undefined || newScore === null) {
-        return response.status(400).json({ error: "Score not provided" });
-      }
+      const { newScore, promptId } = request.body;
 
       const user = await User.findOne({
         authProviderId: id,
@@ -47,23 +44,47 @@ export default async function handler(request, response) {
         return response.status(400).json({ error: "User not found" });
       }
 
-      if (newScore > user.highscore) {
-        user.highscore = newScore;
-        await user.save();
+      if (promptId !== undefined) {
+        const isBookmarked = user.bookmarks.includes(promptId);
+
+        if (isBookmarked) {
+          user.bookmarks = user.bookmarks.filter(
+            (bookmark) => bookmark.toString() !== promptId
+          );
+          await user.save();
+          return response.status(200).json({
+            message: "Bookmark removed",
+            bookmarks: user.bookmarks,
+          });
+        } else {
+          user.bookmarks.push(promptId);
+          await user.save();
+          return response.status(200).json({
+            message: "Bookmark added",
+            bookmarks: user.bookmarks,
+          });
+        }
+      }
+
+      if (newScore !== undefined && newScore !== null) {
+        if (newScore > user.highscore) {
+          user.highscore = newScore;
+          await user.save();
+          return response.status(200).json({
+            message: "Highscore updated",
+            highscore: user.highscore,
+          });
+        }
+
         return response.status(200).json({
-          message: "Highscore updated",
+          message: "Score not higher than current highscore",
           highscore: user.highscore,
         });
       }
 
-      return response.status(200).json({
-        message: "Score not higher than current highscore",
-        highscore: user.highscore,
-      });
+      return response.status(400).json({ error: "No valid data provided" });
     } catch (error) {
       return response.status(500).json({ error: error.message });
     }
   }
-
-  return response.status(405).json({ status: "Method not allowed" });
 }

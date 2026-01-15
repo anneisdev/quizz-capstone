@@ -13,6 +13,16 @@ export default function CollectionPage() {
   const [deleteSuccessMessage, setDeleteSuccessMessage] = useState("");
   const [query, setQuery] = useState("");
   const { data: prompts, isLoading, error } = useSWR("/api/prompts");
+  const { data: userData } = useSWR(
+    session?.user?.id ? `/api/users/${session.user.id}` : null
+  );
+  const [bookmarks, setBookmarks] = useState([]);
+
+  useEffect(() => {
+    if (userData?.bookmarks) {
+      setBookmarks(userData.bookmarks);
+    }
+  }, [userData]);
 
   useEffect(() => {
     if (deleted === "true") {
@@ -36,8 +46,25 @@ export default function CollectionPage() {
     return <h2>Access denied!</h2>;
   }
 
-  async function handleBookmark() {
-    console.log("bookmarked");
+  async function handleBookmark(promptId) {
+    try {
+      const response = await fetch(`/api/users/${session.user.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          promptId: promptId,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setBookmarks(data.bookmarks);
+      }
+    } catch (error) {
+      console.error("Failed to toggle bookmark", error);
+    }
   }
 
   function handleFilter(event) {
@@ -83,7 +110,11 @@ export default function CollectionPage() {
           try again later.
         </p>
       )}
-      <PromptList handleBookmark={handleBookmark} prompts={filteredPrompts} />
+      <PromptList
+        handleBookmark={handleBookmark}
+        prompts={filteredPrompts}
+        bookmarks={bookmarks}
+      />
       <FooterNavigation />
     </div>
   );
