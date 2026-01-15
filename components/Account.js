@@ -30,6 +30,7 @@ export default function Account() {
       <p>Highscore: {user.highscore}</p>
       <p>Bookmarks: {user.bookmarks.length}</p>
       <p>My Prompts: {userPrompts.length}</p>
+      <button>Darkmode</button>
     </>
   );
 }
