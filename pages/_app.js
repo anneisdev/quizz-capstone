@@ -1,7 +1,7 @@
 import { SWRConfig } from "swr";
 import GlobalStyle from "../styles";
 import { SessionProvider, useSession } from "next-auth/react";
-import Login from "@/components/Login";
+import Login from "@/components/Profile/Login";
 
 export async function fetcher(url) {
   const response = await fetch(url);

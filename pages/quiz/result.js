@@ -1,4 +1,4 @@
-import FooterNavigation from "@/components/FooterNavigation";
+import FooterNavigation from "@/components/Navigation/FooterNavigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
@@ -7,6 +7,8 @@ import useLocalStorageState from "use-local-storage-state";
 export default function QuizResultPage() {
   const { data: session, status } = useSession();
   const { data: prompts, isLoading, error } = useSWR("/api/prompts");
+  const { data: leaderboardData, isLoading: leaderboardLoading } =
+    useSWR("/api/users");
   const [submittedAnswers, setSubmittedAnswers] = useLocalStorageState(
     "quizAnswers",
     { defaultValue: {} }
@@ -47,6 +49,7 @@ export default function QuizResultPage() {
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Failed to load data.</p>;
   if (!prompts) return null;
+  if (leaderboardLoading) return <p>Loading Leaderboard data...</p>;
 
   let count = 0;
   const results = prompts.map((prompt) => {
@@ -68,9 +71,17 @@ export default function QuizResultPage() {
 
   return (
     <>
-      <p>
-        Result: {count} / {results.length}
-      </p>
+      <p>Total: {results.length}</p>
+      <p>Correct: {count}</p>
+      <p>Incorrect: {results.length - count}</p>
+      <p>leaderboard:</p>
+      <ul>
+        {leaderboardData?.map((user, index) => (
+          <li key={user._id}>
+            {index + 1}. {user.name}: {user.highscore}{" "}
+          </li>
+        ))}
+      </ul>
       <FooterNavigation />
     </>
   );

@@ -48,4 +48,8 @@ const StyledLink = styled(Link)`
   &:hover {
     background-color: #e0e0e0;
   }
+
+  &:active {
+    transform: scale(0.98);
+  }
 `;

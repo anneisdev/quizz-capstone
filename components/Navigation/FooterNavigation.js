@@ -24,4 +24,10 @@ const StyledDiv = styled.div`
   position: fixed;
   bottom: 0;
   width: 100%;
+  min-height: 5vh;
+  background-color: white;
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
 `;

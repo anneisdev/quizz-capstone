@@ -1,5 +1,5 @@
-import FooterNavigation from "@/components/FooterNavigation";
-import PromptForm from "@/components/PromptForm";
+import FooterNavigation from "@/components/Navigation/FooterNavigation";
+import PromptForm from "@/components/Prompts/PromptForm";
 import useSWR from "swr";
 
 export default function CreatePage() {

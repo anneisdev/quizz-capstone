@@ -1,6 +1,6 @@
-import FooterNavigation from "@/components/FooterNavigation";
-import HomeNavigation from "@/components/HomeNavigation";
-import PromptList from "@/components/PromptList";
+import FooterNavigation from "@/components/Navigation/FooterNavigation";
+import HomeNavigation from "@/components/Navigation/HomeNavigation";
+import PromptList from "@/components/Prompts/PromptList";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";

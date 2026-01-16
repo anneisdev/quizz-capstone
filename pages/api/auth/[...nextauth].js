@@ -18,10 +18,12 @@ export const authOptions = {
       await dbConnect();
       await User.findOneAndUpdate(
         { authProviderId: profile.id },
-        { $setOnInsert: { highscore: 0, bookmarks: [] } },
+        {
+          $set: { name: profile.name || profile.login },
+          $setOnInsert: { highscore: 0, bookmarks: [] },
+        },
         { upsert: true }
       );
-
       return true;
     },
 

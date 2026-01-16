@@ -1,5 +1,5 @@
-import FooterNavigation from "@/components/FooterNavigation";
-import PromptList from "@/components/PromptList";
+import FooterNavigation from "@/components/Navigation/FooterNavigation";
+import PromptList from "@/components/Prompts/PromptList";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import useSWR from "swr";

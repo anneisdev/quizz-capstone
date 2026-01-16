@@ -1,5 +1,5 @@
-import PromptDetail from "@/components/PromptDetail";
-import PromptForm from "@/components/PromptForm";
+import PromptDetail from "@/components/Prompts/PromptDetail";
+import PromptForm from "@/components/Prompts/PromptForm";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
