@@ -43,10 +43,6 @@ export default function CollectionPage() {
   if (error) return <p>Failed to load data.</p>;
   if (!prompts) return null;
 
-  if (status !== "authenticated") {
-    return <h2>Access denied!</h2>;
-  }
-
   async function handleBookmark(promptId) {
     try {
       const response = await fetch(`/api/users/${session.user.id}`, {

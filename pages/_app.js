@@ -1,6 +1,6 @@
 import { SWRConfig } from "swr";
 import GlobalStyle from "../styles";
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider, useSession } from "next-auth/react";
 import Login from "@/components/Login";
 
 export async function fetcher(url) {
@@ -22,11 +22,22 @@ export default function App({
   return (
     <>
       <SessionProvider session={session}>
-        <SWRConfig value={{ fetcher }}>
-          <GlobalStyle />
-          <Component {...pageProps} />
-        </SWRConfig>
+        <Auth>
+          <SWRConfig value={{ fetcher }}>
+            <GlobalStyle />
+            <Component {...pageProps} />
+          </SWRConfig>
+        </Auth>
       </SessionProvider>
     </>
   );
+}
+
+function Auth({ children }) {
+  const { status } = useSession({ required: true });
+
+  if (status === "loading") {
+    return <div>Is loading</div>;
+  }
+  return children;
 }

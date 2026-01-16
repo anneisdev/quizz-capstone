@@ -21,7 +21,6 @@ export default function Account() {
 
   const userPrompts = prompts?.filter((prompt) => prompt.owner === user.authProviderId);
 
-  console.log(user);
 
   return (
     <>
@@ -29,7 +28,7 @@ export default function Account() {
       <p>Username: {session.user.name}</p>
       <p>Highscore: {user.highscore}</p>
       <p>Bookmarks: {user.bookmarks.length}</p>
-      <p>My Prompts: {userPrompts.length}</p>
+      <p>My Prompts: {userPrompts?.length}</p>
       <button>Darkmode</button>
     </>
   );
