@@ -2,6 +2,7 @@ import FooterNavigation from "@/components/Navigation/FooterNavigation";
 import PromptList from "@/components/Prompts/PromptList";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import styled from "styled-components";
 import useSWR from "swr";
 
 export default function BookmarkPage() {
@@ -49,17 +50,29 @@ export default function BookmarkPage() {
 
   return (
     <>
-      {bookmarkedPrompts.length === 0 && (
-        <p>You haven´t bookmarked any prompts yet.</p>
-      )}
-      {bookmarkedPrompts.length > 0 && (
-        <PromptList
-          handleBookmark={handleBookmark}
-          prompts={bookmarkedPrompts}
-          bookmarks={bookmarks}
-        />
-      )}
-      <FooterNavigation />
+      <Container>
+        <StyledHeadline>MY BOOKMARKS</StyledHeadline>
+        {bookmarkedPrompts.length === 0 && (
+          <p>You haven´t bookmarked any prompts yet.</p>
+        )}
+        {bookmarkedPrompts.length > 0 && (
+          <PromptList
+            handleBookmark={handleBookmark}
+            prompts={bookmarkedPrompts}
+            bookmarks={bookmarks}
+          />
+        )}
+        <FooterNavigation />
+      </Container>
     </>
   );
 }
+
+const StyledHeadline = styled.h1`
+  text-align: center;
+`;
+
+const Container = styled.div`
+  padding-left: 30px;
+  padding-right: 30px;
+`;

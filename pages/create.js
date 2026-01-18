@@ -1,5 +1,6 @@
 import FooterNavigation from "@/components/Navigation/FooterNavigation";
 import PromptForm from "@/components/Prompts/PromptForm";
+import styled from "styled-components";
 import useSWR from "swr";
 
 export default function CreatePage() {
@@ -21,8 +22,13 @@ export default function CreatePage() {
 
   return (
     <>
+      <StyledHeadline>CREATE A QUESTION</StyledHeadline>
       <PromptForm onSubmit={handleCreatePrompt} />
       <FooterNavigation />
     </>
   );
 }
+
+const StyledHeadline = styled.h1`
+  text-align: center;
+`;

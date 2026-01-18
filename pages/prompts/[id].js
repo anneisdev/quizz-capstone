@@ -3,6 +3,7 @@ import PromptForm from "@/components/Prompts/PromptForm";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import styled from "styled-components";
 import useSWR from "swr";
 
 export default function PromptDetailPage() {
@@ -48,7 +49,7 @@ export default function PromptDetailPage() {
     });
 
     if (response.ok) {
-      router.push("/?deleted=true");
+      router.push("/collection");
     } else {
       setErrorMessage("Failed to delete. Please try again.");
     }
@@ -95,10 +96,11 @@ export default function PromptDetailPage() {
   const isBookmarked = bookmarks.includes(prompt._id);
 
   return (
-    <>
-      {errorMessage && <p>{errorMessage}</p>}
-      {editSucces && <p>{editSucces}</p>}
-      {!isEiditing && (
+    <PageContainer>
+      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+      {editSucces && <SuccessMessage>{editSucces}</SuccessMessage>}
+
+      {!isEiditing ? (
         <PromptDetail
           data={prompt}
           onDelete={() => handleDeletePrompt(prompt._id)}
@@ -106,15 +108,67 @@ export default function PromptDetailPage() {
           onBookmark={() => handleBookmark(prompt._id)}
           isBookmarked={isBookmarked}
         />
-      )}
-
-      {isEiditing && (
+      ) : (
         <PromptForm
           initialData={prompt}
           onSubmit={handleEditPrompt}
           onCancel={() => setIsEditing(false)}
         />
       )}
-    </>
+    </PageContainer>
   );
 }
+
+const PageContainer = styled.div`
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+`;
+
+const LoadingText = styled.p`
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+`;
+
+const ErrorText = styled.p`
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+  color: red;
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+`;
+
+const ErrorMessage = styled.p`
+  text-align: center;
+  color: red;
+  font-weight: bold;
+  margin: 1rem 0;
+
+  @media (max-width: 480px) {
+    font-size: 0.95rem;
+    margin: 0.75rem 0;
+  }
+`;
+
+const SuccessMessage = styled.p`
+  text-align: center;
+  color: green;
+  font-weight: bold;
+  margin: 1rem 0;
+
+  @media (max-width: 480px) {
+    font-size: 0.95rem;
+    margin: 0.75rem 0;
+  }
+`;
