@@ -89,7 +89,7 @@ export default function Account() {
                   bookmarks={bookmarks}
                 />
               ) : (
-                <NoPrompts>You haven't created any prompts yet.</NoPrompts>
+                <NoPrompts>You haven´t created any prompts yet.</NoPrompts>
               )}
             </>
           )}
