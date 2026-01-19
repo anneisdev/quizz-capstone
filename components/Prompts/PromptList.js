@@ -29,7 +29,7 @@ export default function PromptList({ handleBookmark, prompts, bookmarks }) {
 
             <StyledLink href={`/prompts/${prompt._id}`}>
               <Question>{prompt.question}</Question>
-              <Answer>Show Answer</Answer>
+              <Answer>{prompt.answer}</Answer>
               <Categories>
                 {prompt.categories.map((category) => (
                   <CategoryTag key={category._id}>{category.name}</CategoryTag>
