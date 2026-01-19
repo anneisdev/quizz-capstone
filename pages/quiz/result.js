@@ -83,9 +83,9 @@ export default function QuizResultPage() {
           <ResultBox>
             <BoxTitle>SUMMARY</BoxTitle>
             <StatsList>
-              <StatItem>TOTAL: {total}</StatItem>
               <StatItem>CORRECT: {count}</StatItem>
               <StatItem>INCORRECT: {incorrect}</StatItem>
+              <StatItem>TOTAL: {total}</StatItem>
             </StatsList>
           </ResultBox>
 
