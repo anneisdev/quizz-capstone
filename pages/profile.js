@@ -6,7 +6,12 @@ import styled from "styled-components";
 export default function ProfilePage() {
   return (
     <PageContainer>
-      <Header>MY PROFILE</Header>
+      <HeaderWrapper>
+        <Header>MY PROFILE</Header>
+        <LogoutButtonWrapper>
+          <Login />
+        </LogoutButtonWrapper>
+      </HeaderWrapper>
       <Account />
       <FooterNavigation />
     </PageContainer>
@@ -29,20 +34,46 @@ const PageContainer = styled.div`
   }
 `;
 
-const Header = styled.h1`
-  text-align: center;
-  font-size: 2rem;
-  font-weight: bold;
+const HeaderWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 2rem;
-  margin: 0;
 
   @media (max-width: 768px) {
-    font-size: 1.75rem;
     padding: 1.5rem 1rem;
   }
 
   @media (max-width: 480px) {
-    font-size: 1.5rem;
     padding: 1rem;
+  }
+`;
+
+const Header = styled.h1`
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: 1.75rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.5rem;
+  }
+`;
+
+const LogoutButtonWrapper = styled.div`
+  position: absolute;
+  right: 2rem;
+
+  @media (max-width: 768px) {
+    right: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    right: 0.75rem;
   }
 `;

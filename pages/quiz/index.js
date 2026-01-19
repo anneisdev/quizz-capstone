@@ -129,14 +129,3 @@ const PlayButton = styled.button`
     letter-spacing: 1px;
   }
 `;
-
-const LoadingText = styled.p`
-  text-align: center;
-  padding: 2rem;
-  font-size: 1.1rem;
-
-  @media (max-width: 480px) {
-    padding: 1rem;
-    font-size: 1rem;
-  }
-`;

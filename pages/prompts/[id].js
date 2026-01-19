@@ -126,29 +126,6 @@ const PageContainer = styled.div`
   background-color: #f5f5f5;
 `;
 
-const LoadingText = styled.p`
-  text-align: center;
-  padding: 2rem;
-  font-size: 1.1rem;
-
-  @media (max-width: 480px) {
-    padding: 1rem;
-    font-size: 1rem;
-  }
-`;
-
-const ErrorText = styled.p`
-  text-align: center;
-  padding: 2rem;
-  font-size: 1.1rem;
-  color: red;
-
-  @media (max-width: 480px) {
-    padding: 1rem;
-    font-size: 1rem;
-  }
-`;
-
 const ErrorMessage = styled.p`
   text-align: center;
   color: red;

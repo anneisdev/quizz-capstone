@@ -2,13 +2,17 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import useSWR from "swr";
-import Login from "./Login";
-import Image from "next/image";
+import PromptList from "../Prompts/PromptList";
 
 export default function Account() {
   const { data: session, status } = useSession();
   const [user, setUser] = useState(null);
   const { data: prompts } = useSWR("/api/prompts");
+  const { data: userData } = useSWR(
+    session?.user?.id ? `/api/users/${session.user.id}` : null
+  );
+  const [bookmarks, setBookmarks] = useState([]);
+  const [showPrompts, setShowPrompts] = useState(false);
 
   useEffect(() => {
     if (!session) return;
@@ -18,19 +22,44 @@ export default function Account() {
       .then(setUser);
   }, [session]);
 
-  if (status === "loading") return <p>Loading session…</p>;
-  if (!session) return <p>Please log in</p>;
-  if (!user) return <p>Loading user…</p>;
+  useEffect(() => {
+    if (userData?.bookmarks) {
+      setBookmarks(userData.bookmarks);
+    }
+  }, [userData]);
+
+  if (status === "loading") return <LoadingText>Loading session…</LoadingText>;
+  if (!session) return <LoadingText>Please log in</LoadingText>;
+  if (!user) return <LoadingText>Loading user…</LoadingText>;
 
   const userPrompts = prompts?.filter(
     (prompt) => prompt.owner === user.authProviderId
   );
 
-  //<Image src={session.user.image} width={50} height={50} alt={user.name}></Image>
+  async function handleBookmark(promptId) {
+    try {
+      const response = await fetch(`/api/users/${session.user.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          promptId: promptId,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setBookmarks(data.bookmarks);
+      }
+    } catch (error) {
+      console.error("Failed to toggle bookmark", error);
+    }
+  }
 
   return (
     <Container>
-      <BoxContainer>
+      <ContentWrapper>
         <Box>
           <BoxTitle>SUMMARY</BoxTitle>
           <InfoList>
@@ -43,14 +72,29 @@ export default function Account() {
           </InfoList>
         </Box>
 
-        <Box>
-          <BoxTitle>ACTIONS</BoxTitle>
-          <ButtonContainer>
-            <ActionButton>Darkmode</ActionButton>
-            <Login />
-          </ButtonContainer>
-        </Box>
-      </BoxContainer>
+        <PromptsSection>
+          <SectionHeader>
+            <SectionTitle>MY PROMPTS</SectionTitle>
+            <ToggleButton onClick={() => setShowPrompts(!showPrompts)}>
+              {showPrompts ? "HIDE" : "SHOW"}
+            </ToggleButton>
+          </SectionHeader>
+
+          {showPrompts && (
+            <>
+              {userPrompts?.length > 0 ? (
+                <PromptList
+                  handleBookmark={handleBookmark}
+                  prompts={userPrompts}
+                  bookmarks={bookmarks}
+                />
+              ) : (
+                <NoPrompts>You haven't created any prompts yet.</NoPrompts>
+              )}
+            </>
+          )}
+        </PromptsSection>
+      </ContentWrapper>
     </Container>
   );
 }
@@ -59,27 +103,26 @@ const Container = styled.div`
   flex: 1;
   display: flex;
   justify-content: center;
-  padding: 2rem;
+  padding: 0 2rem 2rem 2rem;
 
   @media (max-width: 768px) {
-    padding: 1.5rem;
+    padding: 0 1.5rem 1.5rem 1.5rem;
   }
 
   @media (max-width: 480px) {
-    padding: 1rem;
+    padding: 0 1rem 1rem 1rem;
   }
 `;
 
-const BoxContainer = styled.div`
+const ContentWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 2rem;
-  max-width: 1000px;
+  max-width: 1400px;
   width: 100%;
 
   @media (max-width: 768px) {
-    flex-direction: column;
     gap: 1.5rem;
-    max-width: 600px;
   }
 
   @media (max-width: 480px) {
@@ -88,7 +131,6 @@ const BoxContainer = styled.div`
 `;
 
 const Box = styled.div`
-  flex: 1;
   border: 3px solid black;
   background-color: white;
   padding: 2rem;
@@ -145,47 +187,106 @@ const InfoItem = styled.p`
   }
 `;
 
-const ButtonContainer = styled.div`
+const PromptsSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  align-items: center;
-  margin-top: 2rem;
+  gap: 1.5rem;
 
   @media (max-width: 768px) {
-    margin-top: 1.5rem;
+    gap: 1.25rem;
   }
 
   @media (max-width: 480px) {
-    margin-top: 1rem;
-    gap: 0.875rem;
-    width: 100%;
+    gap: 1rem;
   }
 `;
 
-const ActionButton = styled.button`
-  padding: 0.75rem 2rem;
+const SectionHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  position: relative;
+
+  @media (max-width: 768px) {
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    gap: 1rem;
+    flex-direction: column;
+  }
+`;
+
+const SectionTitle = styled.h2`
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: 1.75rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.5rem;
+  }
+`;
+
+const ToggleButton = styled.button`
+  padding: 0.5rem 1.5rem;
   border: 2px solid black;
   background-color: white;
   font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
-  min-width: 150px;
+  transition: background-color 0.2s ease;
 
   &:hover {
     background-color: #f0f0f0;
   }
 
+  &:active {
+    transform: scale(0.98);
+  }
+
   @media (max-width: 768px) {
-    padding: 0.625rem 1.75rem;
+    padding: 0.4rem 1.25rem;
     font-size: 0.95rem;
-    min-width: 140px;
   }
 
   @media (max-width: 480px) {
-    padding: 0.75rem 1rem;
-    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
     width: 100%;
-    max-width: 250px;
-    min-width: unset;
+    max-width: 200px;
+  }
+`;
+
+const NoPrompts = styled.p`
+  text-align: center;
+  font-size: 1.1rem;
+  color: #666;
+  padding: 2rem;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    padding: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.95rem;
+    padding: 1rem;
+  }
+`;
+
+const LoadingText = styled.p`
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+    font-size: 1rem;
   }
 `;

@@ -5,67 +5,61 @@ export default function Login() {
   const { data: session } = useSession();
 
   if (session) {
-    return (
-      <>
-        <ActionButton onClick={() => signOut()}>Sign out</ActionButton>
-      </>
-    );
+    return <LogoutButton onClick={() => signOut()}>LOGOUT</LogoutButton>;
   }
-  return (
-    <LoginWrapper>
-      <LoginText>Not signed in</LoginText>
-      <ActionButton onClick={() => signIn()}>Sign in</ActionButton>
-    </LoginWrapper>
-  );
+  return <LoginButton onClick={() => signIn()}>LOGIN</LoginButton>;
 }
 
-const LoginWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-
-  @media (max-width: 480px) {
-    width: 100%;
-  }
-`;
-
-const LoginText = styled.p`
-  margin: 0;
-  font-size: 1rem;
-
-  @media (max-width: 768px) {
-    font-size: 0.95rem;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 0.9rem;
-  }
-`;
-
-const ActionButton = styled.button`
-  padding: 0.75rem 2rem;
+const LogoutButton = styled.button`
+  padding: 0.5rem 1rem;
   border: 2px solid black;
   background-color: white;
   font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
-  min-width: 150px;
 
   &:hover {
     background-color: #f0f0f0;
   }
 
+  &:active {
+    transform: scale(0.98);
+  }
+
   @media (max-width: 768px) {
-    padding: 0.625rem 1.75rem;
+    padding: 0.4rem 0.8rem;
     font-size: 0.95rem;
-    min-width: 140px;
   }
 
   @media (max-width: 480px) {
-    padding: 0.75rem 1rem;
-    font-size: 1rem;
-    width: 100%;
-    max-width: 250px;
-    min-width: unset;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.9rem;
+  }
+`;
+
+const LoginButton = styled.button`
+  padding: 0.5rem 1rem;
+  border: 2px solid black;
+  background-color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.9rem;
   }
 `;
